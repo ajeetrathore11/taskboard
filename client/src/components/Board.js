@@ -6,6 +6,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import { API_URL } from '../config/config';
 import AddNewCard from './AddNewCard';
 
 
@@ -75,7 +76,7 @@ class Board extends Component {
 
 	fetchTasks = async () => {
 		try {
-			const resp = await (await fetch('http://localhost:4000/api/gettasks', {
+			const resp = await (await fetch(`${API_URL}/api/gettasks`, {
 				method: 'GET',
 				headers: {
 					'Content-type': 'application/json; charset=UTF-8',
@@ -99,7 +100,7 @@ class Board extends Component {
 	}
 
 	fetchAllMembers = async () => {
-		const users = await(await fetch('http://localhost:4000/api/getTeamUser', {
+		const users = await(await fetch(`${API_URL}/api/getTeamUser`, {
 			method: 'GET',
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8',
@@ -108,13 +109,13 @@ class Board extends Component {
 			},
 		})).json();
 		if (users.success) {
-			const teamMembers = users.data.map(member => {return { name: member.name, '_id': member._id }});
+			const teamMembers = users.data.map(member => {return { username: member.username, '_id': member._id }});
 			this.setState({ teamMembers: teamMembers });
 		}
 	}
 
 	addNewTask = async (data) => {
-		const task = await(await fetch('http://localhost:4000/api/task', {
+		const task = await(await fetch(`${API_URL}/api/task`, {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8',

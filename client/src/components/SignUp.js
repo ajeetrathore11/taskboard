@@ -24,13 +24,19 @@ const useStyles = makeStyles((theme) => ({
 
 const AddTaskDialog = (props) => {
     const classes = useStyles();
-    const [name, setName] = React.useState((props.user && props.user.name) || '');
+    const [username, setUserName] = React.useState((props.user && props.user.username) || '');
+    const [password, setPassword] = React.useState((props.user && props.user.username) || '');
     const [designation, setDesignation] = React.useState((props.user && props.user.designation) || '');
     const [team, setTeam] = React.useState((props.user && props.user.team) || '');
 
-    const handleName = (event) => {
-        setName(event.target.value);
+    const handleUserName = (event) => {
+        setUserName(event.target.value);
     };
+
+    const handlePassword = (event) => {
+        setPassword(event.target.value);
+    };
+
     const handleDesignation = (event) => {
         setDesignation(event.target.value);
     };
@@ -38,7 +44,7 @@ const AddTaskDialog = (props) => {
         setTeam(event.target.value);
     };
     const handleSignUp = () => {
-        props.handleSignUp({ name, designation, team });
+        props.handleSignUp({ username, password, designation, team });
         props.setSignUpState(false);
     };
     return (
@@ -49,11 +55,24 @@ const AddTaskDialog = (props) => {
                     <TextField
                         disabled={props.edit}
                         required
-                        label='Name'
+                        label='Username'
                         variant='outlined'
                         fullWidth
-                        value={name}
-                        onChange={handleName}
+                        value={username}
+                        onChange={handleUserName}
+                        id="outlined-required"
+                        className={classes.addCard}
+                    />
+                </Grid>
+                <Grid>
+                    <TextField
+                        disabled={props.edit}
+                        required
+                        label='Password'
+                        variant='outlined'
+                        fullWidth
+                        value={password}
+                        onChange={handlePassword}
                         id="outlined-required"
                         className={classes.addCard}
                     />

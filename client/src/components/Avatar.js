@@ -27,7 +27,7 @@ const InitialsAvatar = (props) => {
 
     return (
         <div className={classes.root}>
-            <Avatar className={props.self? classes.orange: ''}>{getInitials(props.name)}</Avatar>
+            <Avatar className={props.self? classes.orange: ''}>{getInitials(props.username)}</Avatar>
         </div>
     );
 }

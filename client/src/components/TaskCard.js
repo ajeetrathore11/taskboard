@@ -1,10 +1,11 @@
 
 import React from 'react';
-import { Card, CardContent, Grid, Typography, Box, Button, IconButton } from '@material-ui/core';
+import { Card, CardContent, Grid, Typography, Box, IconButton } from '@material-ui/core';
 import Avatar from './Avatar';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
+import { API_URL } from '../config/config';
 import AddTaskDialog from './AddTaskDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -42,7 +43,7 @@ export default function TaskCard(props) {
     const [editTaskDialog, setEditTaskDialog] = React.useState(false);
     const { task } = props;
     const deleteTask = async (_id) => {
-        const task = await (await fetch(`http://localhost:4000/api/task/${_id}`, {
+        const task = await (await fetch(`${API_URL}/api/task/${_id}`, {
             method: 'DELETE',
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -57,7 +58,7 @@ export default function TaskCard(props) {
 
     const editTask = async (data) => {
         try {
-            const resp = await (await fetch(`http://localhost:4000/api/task/${props.task._id}`, {
+            const resp = await (await fetch(`${API_URL}/api/task/${props.task._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -106,7 +107,7 @@ export default function TaskCard(props) {
                         </Box>
                     </Grid>
                     <Grid item xs={12} className={classes.footer}>
-                        {task.users.map(user => <Avatar key={user._id} name={user.name} self={user._id === props.user._id} />)}
+                        {task.users.map(user => <Avatar key={user._id} username={user.username} self={user._id === props.user._id} />)}
                     </Grid>
                 </CardContent>
             </div>

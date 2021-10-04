@@ -3,9 +3,11 @@ import Button from '@material-ui/core/Button';
 import { CssBaseline, TextField, Typography, Container } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import fetch from 'isomorphic-fetch';
+
+import { API_URL } from '../config/config';
 import SnackBar from './SnackBar';
 import BoardOutline from './BoardOutline';
-import SignUp from './SignUp'
+import SignUp from './SignUp';
 
 const styles = theme => ({
 	paper: {
@@ -27,7 +29,8 @@ class Login extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
-			value: '',
+			username: '',
+			password: '',
 			loggedIn: false,
 			showError: false,
 			openSignUpDialog: false,
@@ -64,8 +67,12 @@ class Login extends Component {
 		}
 	}
 
-	handleChange = (event) => {
-		this.setState({ value: event.target.value });
+	handleNameChange = (event) => {
+		this.setState({ username: event.target.value });
+	}
+
+	handlePassChange = (event) => {
+		this.setState({ password: event.target.value });
 	}
 
 	handleSubmit = (event) => {
@@ -74,13 +81,13 @@ class Login extends Component {
 	}
 
 	fetchUserDetails = async (createCookie) => {
-		const resp = await (await fetch('http://localhost:4000/api/usertoken', {
+		const resp = await (await fetch(`${API_URL}/api/usertoken`, {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8',
 				'Access-Control-Allow-Origin': '*'
 			},
-			body: JSON.stringify({ name: this.state.value })
+			body: JSON.stringify({ username: this.state.username, password: this.state.password })
 		})).json();
 		if (resp.success) {
 			createCookie && this.createCookie('authToken', resp.token, 5);
@@ -97,7 +104,7 @@ class Login extends Component {
 	}
 
 	handleSignUp = async (data) => {
-		const signedUp = await(await fetch('http://localhost:4000/api/user', {
+		const signedUp = await(await fetch(`${API_URL}/api/user`, {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8',
@@ -135,17 +142,29 @@ class Login extends Component {
 					</Typography>
 					<form className={classes.form} onSubmit={this.handleSubmit}>
 						<TextField
-							value={this.state.value}
+							value={this.state.username}
 							variant="outlined"
 							margin="normal"
 							required
 							fullWidth
 							id="name"
-							label="Name"
+							label="Username"
 							name="name"
 							autoComplete="name"
 							autoFocus
-							onChange={this.handleChange}
+							onChange={this.handleNameChange}
+						/>
+						<TextField
+							value={this.state.password}
+							variant="outlined"
+							margin="normal"
+							required
+							fullWidth
+							id="password"
+							label="password"
+							name="password"
+							autoComplete="password"
+							onChange={this.handlePassChange}
 						/>
 						<Button
 							type="submit"
@@ -166,7 +185,7 @@ class Login extends Component {
 						</Button>
 					</form>
 				</div>
-				<SnackBar open={this.state.showError} type="warning" message="Enter Correct Name" closeSnackBar={() => this.setState({ showError: false })} />
+				<SnackBar open={this.state.showError} type="error" message="Invalid username or Password" closeSnackBar={() => this.setState({ showError: false })} />
 			</Container>
 		);
 	}

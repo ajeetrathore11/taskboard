@@ -1,7 +1,9 @@
 const User = require('../mongodb/models/user-model');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
-createUser = (req, res) => {
+createUser = async (req, res) => {
     const accessTokenSecret = 'somerandomsecret';
     const body = req.body
     if (!body) {
@@ -9,6 +11,10 @@ createUser = (req, res) => {
             success: false,
             error: 'User details incomplete',
         })
+    }
+
+    if (body.password) {
+        body.password = await bcrypt.hash(body.password, saltRounds);
     }
 
     const user = new User(body)
@@ -20,11 +26,17 @@ createUser = (req, res) => {
     user
         .save()
         .then(() => {
-            const { name, _id, designation, team } = user;
-            const accessToken = jwt.sign({ name, _id, designation, team }, accessTokenSecret, { expiresIn: "5d" });
+            const { username, _id, designation, team } = user;
+            const accessToken = jwt.sign({ username, _id, designation, team }, accessTokenSecret, { expiresIn: "5d" });
+            console.log('user :>> ', user);
             return res.status(201).json({
                 success: true,
-                data: user,
+                data: {
+                    username,
+                    _id,
+                    designation,
+                    team
+                },
                 token: accessToken,
                 message: 'User created!',
             })
@@ -54,7 +66,7 @@ updateUser = async (req, res) => {
                 message: 'User not found!',
             })
         }
-        user.name = body.name;
+        user.username = body.username;
         user.designation = body.designation;
         user.team = body.team;
         user
@@ -100,20 +112,34 @@ getUser = async (req, res) => {
             error: 'User details incomplete',
         })
     }
-    const name = body.name;
-    await User.findOne({ name }, (err, user) => {
+    const username = body.username;
+    const bodyPassword = body.password;
+    await User.findOne({ username }, async (err, user) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
         }
 
         if (!user) {
             return res
-                .status(404)
-                .json({ success: false, error: `User not found` });
+                .status(401)
+                .json({ success: false, error: `Username or Password is not valid` });
         }
-        const { name, _id, designation, team } = user;
-        const accessToken = jwt.sign({ name, _id, designation, team }, accessTokenSecret, { expiresIn: "5d" });
-        return res.status(200).json({ success: true, data: user, token: accessToken });
+        const { username, password: hash, _id, designation, team } = user;
+        const isValidPass = await bcrypt.compare(bodyPassword, hash);
+        if(isValidPass) {
+            const accessToken = jwt.sign({ username, _id, designation, team }, accessTokenSecret, { expiresIn: "5d" });
+            return res.status(200).json({ success: true, data: {
+                username,
+                _id,
+                designation,
+                team
+            }, token: accessToken });
+        } else {
+            return res
+                .status(401)
+                .json({ success: false, error: `Username or Password is not valid` });
+        }
+        
     }).catch(err => console.log(err))
 }
 

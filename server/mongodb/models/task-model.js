@@ -6,7 +6,7 @@ const Task = new Schema(
         heading: { type: String, required: true },
         details: { type: String, required: true },
         status: { type: String, required: true },
-        users: { type: [{ _id: mongoose.ObjectId, name: String}] },
+        users: { type: [{ _id: mongoose.ObjectId, username: String}] },
         team: { type: String, required: true },
     },
     { timestamps: true },

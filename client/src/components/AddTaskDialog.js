@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Button,
     TextField,
@@ -27,10 +27,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddTaskDialog = (props) => {
+    console.log('props :>> ', props);
     const classes = useStyles();
-    const [assignee, setAssignee] = React.useState([]);
-    const [heading, setHeading] = React.useState(props.heading || '');
-    const [details, setDetails] = React.useState(props.details || '');
+    const [assignee, setAssignee] = useState([]);
+    const [heading, setHeading] = useState(props.heading || '');
+    const [details, setDetails] = useState(props.details || '');
 
     const handleAssignee = (event) => {
         setAssignee(event.target.value);
@@ -85,7 +86,7 @@ const AddTaskDialog = (props) => {
                         label="Assignee"
                     >
                         {props.teamMembers.map(member =>
-                            <MenuItem value={member}>{member.name}</MenuItem>
+                            <MenuItem value={member}>{member.username}</MenuItem>
                         )}
                     </Select>
                 </FormControl>

@@ -1,7 +1,8 @@
-import React, {Component} from 'react'
-import { Grid } from '@material-ui/core'
-import TaskCard from './TaskCard'
-import { withStyles } from '@material-ui/core/styles'
+import React, {Component} from 'react';
+import { Grid } from '@material-ui/core';
+import { API_URL } from '../config/config';
+import TaskCard from './TaskCard';
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = () => ({
     card: {
@@ -20,7 +21,7 @@ class CardsList extends Component {
     onDrop = async(ev, status) => {
         let id = ev.dataTransfer.getData("id");
         try {
-			const resp = await (await fetch(`http://localhost:4000/api/task/${id}`, {
+			const resp = await (await fetch(`${API_URL}/api/task/${id}`, {
 				method: 'PUT',
 				headers: {
 					'Content-type': 'application/json; charset=UTF-8',

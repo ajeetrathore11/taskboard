@@ -1,7 +1,8 @@
 import React from 'react';
-import { Grid, Typography, Paper, Toolbar, Button, Menu, MenuItem, Fade, IconButton } from '@material-ui/core';
+import { Grid, Typography, Paper, Toolbar, Menu, MenuItem, Fade, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
+import { API_URL } from '../config/config';
 import SignUp from './SignUp';
 import Board from './Board';
 
@@ -51,7 +52,7 @@ const BoardOutline = (props) => {
 
     const handleEditUser = async (data) => {
         try {
-            const resp = await (await fetch(`http://localhost:4000/api/user`, {
+            const resp = await (await fetch(`${API_URL}/api/user`, {
                 method: 'PUT',
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
